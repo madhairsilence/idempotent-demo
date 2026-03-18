@@ -4,7 +4,6 @@ import com.example.idempotentapi.dto.OperationResponse;
 import com.example.idempotentapi.model.User;
 import com.example.idempotentapi.quartz.AsyncCreateUserJob;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -24,7 +23,6 @@ import java.util.HexFormat;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class UserService {
 
     private static final String IDEM_CACHE = "idempotencyKeys";
@@ -32,6 +30,12 @@ public class UserService {
     private final CacheManager cacheManager;
     private final Scheduler scheduler;
     private final ObjectMapper objectMapper;
+
+    public UserService(CacheManager cacheManager, Scheduler scheduler, ObjectMapper objectMapper) {
+        this.cacheManager = cacheManager;
+        this.scheduler = scheduler;
+        this.objectMapper = objectMapper;
+    }
 
     // Legacy method without idempotency
     public OperationResponse create(User user) {

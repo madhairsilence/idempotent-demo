@@ -3,26 +3,32 @@ package com.example.idempotentapi.quartz;
 import com.example.idempotentapi.dto.OperationResponse;
 import com.example.idempotentapi.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import com.example.idempotentapi.service.UserService;
 
-@Slf4j
 @Component
-@RequiredArgsConstructor
 @DisallowConcurrentExecution
 public class AsyncCreateUserJob implements Job {
+
+    private static final Logger log = LoggerFactory.getLogger(AsyncCreateUserJob.class);
 
     private final ObjectMapper objectMapper;
     private final SimpMessagingTemplate messagingTemplate;
     private final UserService userService;
+
+    public AsyncCreateUserJob(ObjectMapper objectMapper, SimpMessagingTemplate messagingTemplate, UserService userService) {
+        this.objectMapper = objectMapper;
+        this.messagingTemplate = messagingTemplate;
+        this.userService = userService;
+    }
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
